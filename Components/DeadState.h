@@ -7,7 +7,7 @@
 class DeadState : public CellState {
 public:
 	// Constructeur
-	DeadState = default;
+	DeadState() = default;
 
 	bool isAlive() const override;
 
