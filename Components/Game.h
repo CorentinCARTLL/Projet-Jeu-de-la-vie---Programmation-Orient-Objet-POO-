@@ -21,9 +21,6 @@ public:
 	// Constructeur
 	Game(const Grid& g, const Rules& r, int iter);
 
-	// Lance la simulation : affiche la grille et applique les règles
-	void run();
-
 	// Méthodes interne : applique la prochaine génération
 	void nextStep();
 

@@ -1,42 +1,31 @@
-#  Makefile pour le projet Jeu de la Vie
-#  Supporte l’arborescence avec sous-dossiers Components/ et Services/
-CXX      = g++
-CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2
+CXX = g++
+CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2 -IComponents -IServices -IIhm
+LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 
-# Répertoires
-SRCDIR   = .
-BUILDDIR = build
-BINDIR   = Exe
+# Tous les fichiers sources
+SRC := $(wildcard main.cpp) \
+       $(wildcard Components/*.cpp) \
+       $(wildcard Components/*/*.cpp) \
+       $(wildcard Services/*.cpp) \
+       $(wildcard Services/*/*.cpp) \
+       $(wildcard Ihm/*.cpp) \
+       $(wildcard Ihm/*/*.cpp)
 
-# Trouve automatiquement tous les fichiers .cpp du projet
-SOURCES  = $(shell find $(SRCDIR) -type f -name "*.cpp")
+# Transformation en .o
+OBJ = $(SRC:.cpp=.o)
 
-# Transforme chaque .cpp en .o (dans build/)
-OBJECTS  = $(patsubst %.cpp,$(BUILDDIR)/%.o,$(SOURCES))
+# Nom de l'exécutable
+BIN = jeu_de_la_vie
 
-# Nom de l’exécutable final
-TARGET   = $(BINDIR)/jeu_de_la_vie
+all: $(BIN)
 
-# Règle principale
-all: $(TARGET)
+$(BIN): $(OBJ)
+	$(CXX) $(OBJ) -o $(BIN) $(LDFLAGS)
 
-# Construction de l’exécutable
-$(TARGET): $(OBJECTS)
-	@mkdir -p $(BINDIR)
-	$(CXX) $(CXXFLAGS) $^ -o $@
-	@echo "✔ Build terminé : $(TARGET)"
-
-# Compilation des .cpp → .o dans build/
-$(BUILDDIR)/%.o: %.cpp
-	@mkdir -p $(dir $@)
+%.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Nettoyage
 clean:
-	rm -rf $(BUILDDIR) $(BINDIR)
-	@echo "✔ Nettoyage terminé."
+	rm -f $(OBJ) $(BIN)
 
-# Exécution
-run: all
-	./$(TARGET)
-
+.PHONY: all clean
